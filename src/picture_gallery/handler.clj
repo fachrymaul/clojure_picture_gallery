@@ -5,7 +5,9 @@
             [hiccup.middleware :refer [wrap-base-url]]
             [compojure.handler :as handler]
             [compojure.route :as route]
-            [picture-gallery.routes.home :refer [home-routes]]))
+            [picture-gallery.routes.home :refer [home-routes]]
+            [picture-gallery.routes.auth :refer [auth-routes]]
+            [noir.util.middleware :as noir-middleware]))
 
 (defn init []
   (println "picture-gallery is starting"))
@@ -18,6 +20,9 @@
   (route/not-found "Not Found"))
 
 (def app
-  (-> (routes home-routes app-routes)
-      (handler/site)
-      (wrap-base-url)))
+  (noir-middleware/app-handler [auth-routes home-routes app-routes]))
+
+;(def app
+;  (-> (routes home-routes app-routes auth-routes)
+;      (handler/site)
+;      (wrap-base-url)))
